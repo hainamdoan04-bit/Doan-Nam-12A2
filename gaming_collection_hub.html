@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberVault - Danh Sách Game Cá Nhân</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Orbitron for Gaming Vibe -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Stats Page -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#0b0d14',
+                            card: '#131722',
+                            border: '#2a2f45',
+                            accent: '#00f0ff',
+                            purple: '#7000ff',
+                            pink: '#ff0055',
+                            success: '#00ff66',
+                            warning: '#ffb700'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0b0d14;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0d14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2f45;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7000ff;
+        }
+
+        /* Cyberpunk Glow Effects */
+        .neon-border-cyan {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+            border: 1px solid rgba(0, 240, 255, 0.5);
+        }
+        .neon-border-purple {
+            box-shadow: 0 0 15px rgba(112, 0, 255, 0.25);
+            border: 1px solid rgba(112, 0, 255, 0.5);
+        }
+        .neon-text-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+        .neon-text-purple {
+            text-shadow: 0 0 8px rgba(112, 0, 255, 0.6);
+        }
+        .card-hover-effect {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(112, 0, 255, 0.4);
+        }
+
+        /* Glassmorphic Navbar */
+        .glass-nav {
+            background: rgba(19, 23, 34, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Notification Toast Styling */
+        #toast {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyber-purple selection:text-white">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-accent to-cyber-purple flex items-center justify-center text-black font-extrabold text-xl shadow-lg shadow-cyber-accent/20">
+                        <i class="fa-solid font-orbitron">🎮</i>
+                    </div>
+                    <div>
+                        <span class="font-orbitron font-extrabold text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyber-accent via-white to-cyber-purple">
+                            CYBER<span class="text-cyber-accent">VAULT</span>
+                        </span>
+                        <p class="text-[10px] text-gray-400 font-mono tracking-widest uppercase -mt-1">Game Collection Manager</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchPage('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center space-x-2 text-cyber-accent bg-cyber-border/40">
+                        <i class="fa-solid fa-house"></i><span>Trang Chủ</span>
+                    </button>
+                    <button onclick="switchPage('library')" id="nav-library" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center space-x-2 text-gray-300 hover:text-white hover:bg-cyber-border/30">
+                        <i class="fa-solid fa-gamepad"></i><span>Thư Viện Game</span>
+                    </button>
+                    <button onclick="switchPage('add')" id="nav-add" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center space-x-2 text-gray-300 hover:text-white hover:bg-cyber-border/30">
+                        <i class="fa-solid fa-square-plus"></i><span>Thêm Game</span>
+                    </button>
+                    <button onclick="switchPage('stats')" id="nav-stats" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center space-x-2 text-gray-300 hover:text-white hover:bg-cyber-border/30">
+                        <i class="fa-solid fa-chart-pie"></i><span>Thống Kê</span>
+                    </button>
+                    <button onclick="switchPage('settings')" id="nav-settings" class="nav-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center space-x-2 text-gray-300 hover:text-white hover:bg-cyber-border/30">
+                        <i class="fa-solid fa-gear"></i><span>Cài Đặt</span>
+                    </button>
+                </nav>
+
+                <!-- Quick Action / Profile Button -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <button onclick="switchPage('add')" class="bg-gradient-to-r from-cyber-purple to-cyber-pink hover:from-cyber-pink hover:to-cyber-purple text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-cyber-purple/30 transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Tạo Mới</span>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Toggle Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cyber-card border-b border-cyber-border px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchPage('home'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-cyber-border">Trang Chủ</button>
+            <button onclick="switchPage('library'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-cyber-border">Thư Viện Game</button>
+            <button onclick="switchPage('add'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-cyber-border">Thêm Game Mới</button>
+            <button onclick="switchPage('stats'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-cyber-border">Thống Kê & Yêu Thích</button>
+            <button onclick="switchPage('settings'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-cyber-border">Cài Đặt & Profile</button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- ================= PAGE 1: HOME ================= -->
+        <section id="page-home" class="page-section space-y-10">
+            <!-- Hero Banner -->
+            <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-cyber-card via-cyber-border to-cyber-card border border-cyber-border/60 p-8 md:p-12 shadow-2xl">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center opacity-15 mix-blend-overlay"></div>
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="px-3 py-1 bg-cyber-purple/20 text-cyber-accent border border-cyber-accent/30 rounded-full text-xs font-semibold tracking-wider uppercase font-mono">
+                        Cyber Vault v2.0
+                    </span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold font-orbitron tracking-wide text-white leading-tight">
+                        QUẢN LÝ BỘ SƯU TẬP <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-accent to-cyber-purple">GAME ĐỈNH CAO</span>
+                    </h1>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">
+                        Nơi lưu trữ, đánh giá và theo dõi toàn bộ hành trình chinh phục các tựa game yêu thích của bạn trên mọi nền tảng PC, Console và Mobile.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-4">
+                        <button onclick="switchPage('library')" class="bg-cyber-accent text-black hover:bg-cyan-300 font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-cyber-accent/20 flex items-center space-x-2">
+                            <i class="fa-solid fa-compass"></i>
+                            <span>Khám Phá Thư Viện</span>
+                        </button>
+                        <button onclick="switchPage('add')" class="bg-cyber-border hover:bg-cyber-border/80 text-white font-semibold px-6 py-3 rounded-xl border border-gray-700 transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Thêm Game Mới</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Statistics Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border/50 hover:border-cyber-accent/40 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-sm font-medium">Tổng Số Game</span>
+                        <div class="w-10 h-10 rounded-lg bg-cyber-accent/10 text-cyber-accent flex items-center justify-center"><i class="fa-solid fa-layer-group text-lg"></i></div>
+                    </div>
+                    <div id="stat-total" class="text-3xl font-extrabold font-orbitron mt-2 text-white">0</div>
+                    <p class="text-xs text-gray-500 mt-1">Trong bộ sưu tập</p>
+                </div>
+
+                <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border/50 hover:border-cyber-purple/40 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-sm font-medium">Đang Chơi</span>
+                        <div class="w-10 h-10 rounded-lg bg-cyber-purple/10 text-cyber-purple flex items-center justify-center"><i class="fa-solid fa-gamepad text-lg"></i></div>
+                    </div>
+                    <div id="stat-playing" class="text-3xl font-extrabold font-orbitron mt-2 text-cyber-accent">0</div>
+                    <p class="text-xs text-gray-500 mt-1">Đang chinh phục</p>
+                </div>
+
+                <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border/50 hover:border-cyber-success/40 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-sm font-medium">Đã Hoàn Thành</span>
+                        <div class="w-10 h-10 rounded-lg bg-green-500/10 text-cyber-success flex items-center justify-center"><i class="fa-solid fa-trophy text-lg"></i></div>
+                    </div>
+                    <div id="stat-completed" class="text-3xl font-extrabold font-orbitron mt-2 text-cyber-success">0</div>
+                    <p class="text-xs text-gray-500 mt-1">Đã phá đảo</p>
+                </div>
+
+                <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border/50 hover:border-cyber-pink/40 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400 text-sm font-medium">Muốn Chơi</span>
+                        <div class="w-10 h-10 rounded-lg bg-cyber-pink/10 text-cyber-pink flex items-center justify-center"><i class="fa-solid fa-bookmark text-lg"></i></div>
+                    </div>
+                    <div id="stat-wishlist" class="text-3xl font-extrabold font-orbitron mt-2 text-cyber-pink">0</div>
+                    <p class="text-xs text-gray-500 mt-1">Danh sách chờ</p>
+                </div>
+            </div>
+
+            <!-- Featured Section (Top Rated) -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold font-orbitron flex items-center gap-2">
+                        <i class="fa-solid fa-star text-yellow-400"></i> Game Nổi Bật (5 Sao)
+                    </h2>
+                    <button onclick="switchPage('library')" class="text-xs text-cyber-accent hover:underline font-semibold">Xem tất cả <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+                <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic Featured Game Cards inserted by JS -->
+                </div>
+            </div>
+
+            <!-- Recently Added Games -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold font-orbitron flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-cyber-purple"></i> Mới Thêm Gần Đây
+                </h2>
+                <div id="home-recent-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Dynamic Recent Game Cards inserted by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: GAME LIBRARY ================= -->
+        <section id="page-library" class="page-section hidden space-y-6">
+            <!-- Header & Filter Bar -->
+            <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border/60 space-y-4 shadow-lg">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold font-orbitron text-white">Thư Viện Game</h1>
+                        <p class="text-xs text-gray-400">Tìm kiếm và lọc bộ sưu tập game của bạn</p>
+                    </div>
+                    <!-- Search Input -->
+                    <div class="relative flex-1 max-w-md">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="library-search" oninput="filterGames()" placeholder="Tìm tên game, ghi chú..." class="w-full bg-cyber-dark border border-cyber-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyber-accent transition-all">
+                    </div>
+                </div>
+
+                <!-- Dropdown Filters Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-cyber-border/40">
+                    <!-- Genre Filter -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Thể Loại</label>
+                        <select id="filter-genre" onchange="filterGames()" class="w-full bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyber-accent">
+                            <option value="ALL">Tất cả thể loại</option>
+                            <option value="Action">Action / Hành động</option>
+                            <option value="RPG">RPG / Nhập vai</option>
+                            <option value="Strategy">Strategy / Chiến thuật</option>
+                            <option value="Indie">Indie</option>
+                            <option value="Adventure">Adventure / Phiêu lưu</option>
+                            <option value="Sports">Sports / Thể thao</option>
+                            <option value="Horror">Horror / Kinh dị</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Trạng Thái</label>
+                        <select id="filter-status" onchange="filterGames()" class="w-full bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyber-accent">
+                            <option value="ALL">Tất cả trạng thái</option>
+                            <option value="Playing">Đang chơi</option>
+                            <option value="Completed">Đã hoàn thành</option>
+                            <option value="Wishlist">Muốn chơi</option>
+                            <option value="On Hold">Tạm dừng</option>
+                        </select>
+                    </div>
+
+                    <!-- Platform Filter -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Nền Tảng</label>
+                        <select id="filter-platform" onchange="filterGames()" class="w-full bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyber-accent">
+                            <option value="ALL">Tất cả nền tảng</option>
+                            <option value="PC">PC</option>
+                            <option value="PS5">PlayStation 5</option>
+                            <option value="Switch">Nintendo Switch</option>
+                            <option value="Xbox">Xbox Series X/S</option>
+                            <option value="Mobile">Mobile</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Option -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Sắp Xếp</label>
+                        <select id="filter-sort" onchange="filterGames()" class="w-full bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyber-accent">
+                            <option value="newest">Mới nhất</option>
+                            <option value="rating-desc">Đánh giá cao nhất</option>
+                            <option value="rating-asc">Đánh giá thấp nhất</option>
+                            <option value="name-asc">Tên (A - Z)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Count Indicator -->
+            <div class="flex justify-between items-center px-1">
+                <span id="library-count-label" class="text-xs text-gray-400 font-mono">Hiển thị 0 game</span>
+                <button onclick="resetFilters()" class="text-xs text-cyber-accent hover:underline">Xóa bộ lọc</button>
+            </div>
+
+            <!-- Games Grid Display -->
+            <div id="library-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Dynamic Game Cards -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="library-empty" class="hidden text-center py-16 bg-cyber-card/40 rounded-2xl border border-dashed border-cyber-border">
+                <i class="fa-solid fa-ghost text-5xl text-gray-600 mb-3"></i>
+                <h3 class="text-lg font-bold text-gray-300">Không tìm thấy game phù hợp</h3>
+                <p class="text-xs text-gray-500 mt-1">Hãy thử thay đổi từ khóa tìm kiếm hoặc điều kiện lọc!</p>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: ADD NEW GAME ================= -->
+        <section id="page-add" class="page-section hidden max-w-3xl mx-auto space-y-6">
+            <div class="bg-cyber-card p-6 md:p-8 rounded-2xl border border-cyber-border shadow-xl space-y-6">
+                <div class="border-b border-cyber-border pb-4">
+                    <h1 class="text-2xl font-bold font-orbitron text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-plus text-cyber-accent"></i> Thêm Game Mới Vào Thư Viện
+                    </h1>
+                    <p class="text-xs text-gray-400 mt-1">Điền đầy đủ thông tin để lưu thông tin game vào bộ sưu tập cá nhân.</p>
+                </div>
+
+                <form id="add-game-form" onsubmit="handleAddGame(event)" class="space-y-5">
+                    <!-- Game Title -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-300 mb-1">Tên Game <span class="text-cyber-pink">*</span></label>
+                        <input type="text" id="add-title" required placeholder="Ví dụ: Black Myth: Wukong" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-accent transition-all">
+                    </div>
+
+                    <!-- Genre & Platform Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-300 mb-1">Thể Loại <span class="text-cyber-pink">*</span></label>
+                            <select id="add-genre" required class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-accent">
+                                <option value="Action">Action / Hành động</option>
+                                <option value="RPG">RPG / Nhập vai</option>
+                                <option value="Strategy">Strategy / Chiến thuật</option>
+                                <option value="Indie">Indie</option>
+                                <option value="Adventure">Adventure / Phiêu lưu</option>
+                                <option value="Sports">Sports / Thể thao</option>
+                                <option value="Horror">Horror / Kinh dị</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-300 mb-1">Nền Tảng <span class="text-cyber-pink">*</span></label>
+                            <select id="add-platform" required class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-accent">
+                                <option value="PC">PC</option>
+                                <option value="PS5">PlayStation 5</option>
+                                <option value="Switch">Nintendo Switch</option>
+                                <option value="Xbox">Xbox Series X/S</option>
+                                <option value="Mobile">Mobile</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Status & Rating Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-300 mb-1">Trạng Thái <span class="text-cyber-pink">*</span></label>
+                            <select id="add-status" required class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-accent">
+                                <option value="Playing">Đang chơi (Playing)</option>
+                                <option value="Completed">Đã hoàn thành (Completed)</option>
+                                <option value="Wishlist">Muốn chơi (Wishlist)</option>
+                                <option value="On Hold">Tạm dừng (On Hold)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-300 mb-1">Đánh Giá (Rating)</label>
+                            <select id="add-rating" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-yellow-400 font-bold focus:outline-none focus:border-cyber-accent">
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5 Superb)</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5 Great)</option>
+                                <option value="3">⭐⭐⭐ (3/5 Good)</option>
+                                <option value="2">⭐⭐ (2/5 Average)</option>
+                                <option value="1">⭐ (1/5 Poor)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Cover Image Selection & Custom URL -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase text-gray-300">Ảnh Bìa Game (Cover Image)</label>
+                        
+                        <!-- Sample Image Selector Buttons -->
+                        <div class="text-xs text-gray-400 mb-1">Chọn nhanh ảnh mẫu đẹp:</div>
+                        <div class="grid grid-cols-4 gap-2 mb-2">
+                            <button type="button" onclick="selectPresetImage('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80')" class="border border-cyber-border rounded-lg overflow-hidden h-16 hover:border-cyber-accent focus:border-cyber-accent relative group">
+                                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                <span class="absolute inset-0 bg-black/40 group-hover:bg-transparent text-[9px] flex items-end p-1 font-bold">Cyber Setup</span>
+                            </button>
+                            <button type="button" onclick="selectPresetImage('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=600&q=80')" class="border border-cyber-border rounded-lg overflow-hidden h-16 hover:border-cyber-accent focus:border-cyber-accent relative group">
+                                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                <span class="absolute inset-0 bg-black/40 group-hover:bg-transparent text-[9px] flex items-end p-1 font-bold">Arcade</span>
+                            </button>
+                            <button type="button" onclick="selectPresetImage('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80')" class="border border-cyber-border rounded-lg overflow-hidden h-16 hover:border-cyber-accent focus:border-cyber-accent relative group">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                <span class="absolute inset-0 bg-black/40 group-hover:bg-transparent text-[9px] flex items-end p-1 font-bold">Retro</span>
+                            </button>
+                            <button type="button" onclick="selectPresetImage('https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600&q=80')" class="border border-cyber-border rounded-lg overflow-hidden h-16 hover:border-cyber-accent focus:border-cyber-accent relative group">
+                                <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                <span class="absolute inset-0 bg-black/40 group-hover:bg-transparent text-[9px] flex items-end p-1 font-bold">Controller</span>
+                            </button>
+                        </div>
+
+                        <input type="url" id="add-cover" placeholder="Hoặc dán đường dẫn URL ảnh (https://...)" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-accent transition-all">
+                    </div>
+
+                    <!-- Personal Notes / Review -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-300 mb-1">Ghi Chú / BÌNH LUẬN CÁ NHÂN</label>
+                        <textarea id="add-notes" rows="3" placeholder="Nhập cảm nhận, tiến độ chơi, thành tích..." class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-accent transition-all"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyber-accent via-blue-500 to-cyber-purple hover:opacity-90 text-black font-extrabold py-3.5 rounded-xl text-base shadow-lg shadow-cyber-accent/20 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Thêm Vào Thư Viện Game</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: STATS & FAVORITES ================= -->
+        <section id="page-stats" class="page-section hidden space-y-8">
+            <div class="border-b border-cyber-border pb-4">
+                <h1 class="text-2xl font-bold font-orbitron text-white">Thống Kê & Yêu Thích</h1>
+                <p class="text-xs text-gray-400">Phân tích tổng quan dữ liệu chơi game và các tựa game đỉnh nhất</p>
+            </div>
+
+            <!-- Charts Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Genre Chart Card -->
+                <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border flex flex-col items-center">
+                    <h3 class="text-sm font-bold text-gray-300 font-orbitron mb-4 text-center">TỶ LỆ THỂ LOẠI GAME</h3>
+                    <div class="w-full max-w-[280px] h-[280px] relative">
+                        <canvas id="genreChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Platform Chart Card -->
+                <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border flex flex-col items-center">
+                    <h3 class="text-sm font-bold text-gray-300 font-orbitron mb-4 text-center">PHÂN BỔ THEO NỀN TẢNG</h3>
+                    <div class="w-full max-w-[280px] h-[280px] relative">
+                        <canvas id="platformChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5-Star Favorites Hall of Fame -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-bold font-orbitron text-yellow-400 flex items-center gap-2">
+                    <i class="fa-solid fa-crown"></i> Game Đạt 5 Sao (Hall of Fame)
+                </h2>
+                <div id="stats-favorites-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic 5 star cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: SETTINGS & ABOUT ================= -->
+        <section id="page-settings" class="page-section hidden max-w-4xl mx-auto space-y-8">
+            <!-- Gamer Profile Card -->
+            <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border flex flex-col sm:flex-row items-center gap-6">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-cyber-purple to-cyber-pink p-1 flex-shrink-0">
+                    <div class="w-full h-full rounded-full bg-cyber-dark overflow-hidden flex items-center justify-center">
+                        <i class="fa-solid fa-user-ninja text-4xl text-cyber-accent"></i>
+                    </div>
+                </div>
+                <div class="space-y-1 text-center sm:text-left">
+                    <div class="flex items-center justify-center sm:justify-start gap-2">
+                        <h2 class="text-xl font-bold font-orbitron text-white">CyberGamer_2077</h2>
+                        <span class="px-2 py-0.5 bg-cyber-accent/20 text-cyber-accent text-[10px] font-mono rounded">PRO VIP</span>
+                    </div>
+                    <p class="text-xs text-gray-400">Hardcore Gamer & Collector • Hanoi, Vietnam</p>
+                    <p class="text-xs text-gray-500 pt-2">"Game is not just a hobby, it's a lifestyle."</p>
+                </div>
+            </div>
+
+            <!-- Data Management (Export / Import / Reset) -->
+            <div class="bg-cyber-card p-6 rounded-2xl border border-cyber-border space-y-6">
+                <h3 class="text-lg font-bold font-orbitron text-white border-b border-cyber-border pb-3">Quản Lý Dữ Liệu Collection</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Export JSON -->
+                    <button onclick="exportDataJSON()" class="p-4 rounded-xl border border-cyber-border bg-cyber-dark hover:border-cyber-accent text-left space-y-2 transition-all group">
+                        <div class="w-8 h-8 rounded-lg bg-cyber-accent/10 text-cyber-accent flex items-center justify-center group-hover:bg-cyber-accent group-hover:text-black">
+                            <i class="fa-solid fa-download"></i>
+                        </div>
+                        <div class="font-bold text-sm text-white">Xuất Dữ Liệu (JSON)</div>
+                        <div class="text-[11px] text-gray-400">Tải tệp sao lưu dữ liệu game về máy tính</div>
+                    </button>
+
+                    <!-- Import JSON -->
+                    <label class="p-4 rounded-xl border border-cyber-border bg-cyber-dark hover:border-cyber-purple text-left space-y-2 transition-all cursor-pointer group">
+                        <div class="w-8 h-8 rounded-lg bg-cyber-purple/10 text-cyber-purple flex items-center justify-center group-hover:bg-cyber-purple group-hover:text-white">
+                            <i class="fa-solid fa-upload"></i>
+                        </div>
+                        <div class="font-bold text-sm text-white">Nhập Dữ Liệu</div>
+                        <div class="text-[11px] text-gray-400">Khôi phục bộ sưu tập từ tệp backup JSON</div>
+                        <input type="file" accept=".json" onchange="importDataJSON(event)" class="hidden">
+                    </label>
+
+                    <!-- Reset Sample Data -->
+                    <button onclick="resetToSampleData()" class="p-4 rounded-xl border border-cyber-border bg-cyber-dark hover:border-cyber-pink text-left space-y-2 transition-all group">
+                        <div class="w-8 h-8 rounded-lg bg-cyber-pink/10 text-cyber-pink flex items-center justify-center group-hover:bg-cyber-pink group-hover:text-white">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </div>
+                        <div class="font-bold text-sm text-white">Khôi Phục Mẫu</div>
+                        <div class="text-[11px] text-gray-400">Đặt lại danh sách game mẫu mặc định ban đầu</div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Details & Edit Game -->
+    <div id="game-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-cyber-card border border-cyber-border w-full max-w-xl rounded-2xl overflow-hidden shadow-2xl relative animate-fade-in">
+            <button onclick="closeModal()" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 text-gray-300 hover:text-white flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-content">
+                <!-- Modal details rendered dynamically via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 bg-cyber-card border border-cyber-accent text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-none">
+        <div id="toast-icon" class="text-cyber-accent text-xl"><i class="fa-solid fa-circle-check"></i></div>
+        <div id="toast-message" class="text-sm font-semibold">Thông báo thành công!</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-cyber-border/40 py-6 bg-cyber-dark text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 CyberVault Game Collection • Thiết kế dành cho Game Thủ</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Default Sample Games Dataset
+        const sampleGames = [
+            {
+                id: '1',
+                title: 'Black Myth: Wukong',
+                genre: 'Action',
+                platform: 'PC',
+                status: 'Playing',
+                rating: '5',
+                cover: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+                notes: 'Đồ họa Unreal Engine 5 đỉnh cao, lối chơi hành động mượt mà ấn tượng!',
+                createdAt: '2026-03-01T10:00:00.000Z'
+            },
+            {
+                id: '2',
+                title: 'Elden Ring',
+                genre: 'RPG',
+                platform: 'PC',
+                status: 'Completed',
+                rating: '5',
+                cover: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80',
+                notes: 'Tuyệt phẩm thế giới mở Souls-like. Đã khám phá 100% bản đồ!',
+                createdAt: '2026-02-15T10:00:00.000Z'
+            },
+            {
+                id: '3',
+                title: 'Cyberpunk 2077',
+                genre: 'RPG',
+                platform: 'PC',
+                status: 'Completed',
+                rating: '5',
+                cover: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+                notes: 'Thành phố Night City sống động, cốt truyện và nhạc nền quá xuất sắc.',
+                createdAt: '2026-01-20T10:00:00.000Z'
+            },
+            {
+                id: '4',
+                title: 'The Witcher 3: Wild Hunt',
+                genre: 'RPG',
+                platform: 'PS5',
+                status: 'Completed',
+                rating: '5',
+                cover: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=800&q=80',
+                notes: 'Hành trình Geralt đi tìm Ciri. Nhiệm vụ phụ có chiều sâu vượt trội.',
+                createdAt: '2026-01-10T10:00:00.000Z'
+            },
+            {
+                id: '5',
+                title: 'Hollow Knight',
+                genre: 'Indie',
+                platform: 'Switch',
+                status: 'Wishlist',
+                rating: '4',
+                cover: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80',
+                notes: 'Game Metroidvania 2D phong cách vẽ tay đẹp mắt.',
+                createdAt: '2026-03-10T10:00:00.000Z'
+            }
+        ];
+
+        // Global State Array
+        let gamesData = [];
+        let genreChartInstance = null;
+        let platformChartInstance = null;
+
+        // On Page Load Initialization
+        window.onload = function () {
+            loadGamesFromStorage();
+            updateAllPages();
+        };
+
+        // Load data from LocalStorage or initialize with sample data
+        function loadGamesFromStorage() {
+            const stored = localStorage.getItem('cyber_games_db');
+            if (stored) {
+                try {
+                    gamesData = JSON.parse(stored);
+                } catch (e) {
+                    gamesData = sampleGames;
+                }
+            } else {
+                gamesData = sampleGames;
+                saveGamesToStorage();
+            }
+        }
+
+        // Save current data to LocalStorage
+        function saveGamesToStorage() {
+            localStorage.setItem('cyber_games_db', JSON.stringify(gamesData));
+        }
+
+        // Single Page Tab Switcher Logic
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => page.classList.add('hidden'));
+            
+            // Show target page
+            const target = document.getElementById('page-' + pageId);
+            if (target) target.classList.remove('hidden');
+
+            // Update active navigation button styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-cyber-accent', 'bg-cyber-border/40');
+                btn.classList.add('text-gray-300');
+            });
+            const activeNav = document.getElementById('nav-' + pageId);
+            if (activeNav) {
+                activeNav.classList.add('text-cyber-accent', 'bg-cyber-border/40');
+                activeNav.classList.remove('text-gray-300');
+            }
+
+            // Specific page render triggers
+            if (pageId === 'stats') {
+                renderCharts();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Refresh dynamic components across pages
+        function updateAllPages() {
+            renderHomeStats();
+            renderHomeFeatured();
+            renderHomeRecent();
+            filterGames();
+            renderFavoritesStats();
+        }
+
+        // Render Home Statistics
+        function renderHomeStats() {
+            document.getElementById('stat-total').innerText = gamesData.length;
+            document.getElementById('stat-playing').innerText = gamesData.filter(g => g.status === 'Playing').length;
+            document.getElementById('stat-completed').innerText = gamesData.filter(g => g.status === 'Completed').length;
+            document.getElementById('stat-wishlist').innerText = gamesData.filter(g => g.status === 'Wishlist').length;
+        }
+
+        // Helper Status Badge Component
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'Playing':
+                    return `<span class="px-2.5 py-1 bg-cyber-accent/10 text-cyber-accent border border-cyber-accent/30 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-play text-[8px] mr-1"></i> Đang Chơi</span>`;
+                case 'Completed':
+                    return `<span class="px-2.5 py-1 bg-green-500/10 text-cyber-success border border-green-500/30 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-check text-[8px] mr-1"></i> Hoàn Thành</span>`;
+                case 'Wishlist':
+                    return `<span class="px-2.5 py-1 bg-cyber-pink/10 text-cyber-pink border border-cyber-pink/30 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-bookmark text-[8px] mr-1"></i> Muốn Chơi</span>`;
+                case 'On Hold':
+                    return `<span class="px-2.5 py-1 bg-yellow-500/10 text-cyber-warning border border-yellow-500/30 rounded-full text-[10px] font-bold uppercase"><i class="fa-solid fa-pause text-[8px] mr-1"></i> Tạm Dừng</span>`;
+                default:
+                    return '';
+            }
+        }
+
+        // Helper Rating Stars Component
+        function getRatingStars(rating) {
+            let stars = '';
+            const r = parseInt(rating) || 0;
+            for (let i = 1; i <= 5; i++) {
+                if (i <= r) {
+                    stars += '<i class="fa-solid fa-star text-yellow-400"></i>';
+                } else {
+                    stars += '<i class="fa-regular fa-star text-gray-600"></i>';
+                }
+            }
+            return `<div class="flex items-center space-x-1 text-xs">${stars}</div>`;
+        }
+
+        // Render Card Html
+        function createGameCardHtml(game) {
+            return `
+                <div class="bg-cyber-card rounded-2xl border border-cyber-border/60 overflow-hidden card-hover-effect flex flex-col justify-between group">
+                    <div class="relative h-44 overflow-hidden cursor-pointer" onclick="openGameModal('${game.id}')">
+                        <img src="${game.cover || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80'}" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/131722/00f0ff?text=Cyber+Game'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-card via-transparent to-transparent"></div>
+                        <div class="absolute top-3 left-3">${getStatusBadge(game.status)}</div>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-gray-300 font-bold border border-white/10">${game.platform}</div>
+                    </div>
+                    
+                    <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-cyber-accent">${game.genre}</span>
+                                ${getRatingStars(game.rating)}
+                            </div>
+                            <h3 onclick="openGameModal('${game.id}')" class="text-base font-bold font-orbitron text-white line-clamp-1 mt-1 cursor-pointer hover:text-cyber-accent transition-colors">${game.title}</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2 mt-1 italic">${game.notes ? `"${game.notes}"` : 'Chưa có ghi chú'}</p>
+                        </div>
+
+                        <div class="pt-2 border-t border-cyber-border/40 flex items-center justify-between text-xs">
+                            <button onclick="openGameModal('${game.id}')" class="text-gray-300 hover:text-cyber-accent font-semibold flex items-center space-x-1">
+                                <i class="fa-solid fa-eye"></i> <span>Chi tiết</span>
+                            </button>
+                            <button onclick="deleteGame('${game.id}')" class="text-gray-500 hover:text-cyber-pink transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Featured Games on Home
+        function renderHomeFeatured() {
+            const grid = document.getElementById('home-featured-grid');
+            const topRated = gamesData.filter(g => g.rating === '5').slice(0, 3);
+            if (topRated.length === 0) {
+                grid.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Chưa có game nào đạt 5 sao.</p>`;
+                return;
+            }
+            grid.innerHTML = topRated.map(g => createGameCardHtml(g)).join('');
+        }
+
+        // Render Recent Games on Home
+        function renderHomeRecent() {
+            const grid = document.getElementById('home-recent-grid');
+            const sorted = [...gamesData].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 4);
+            grid.innerHTML = sorted.map(g => createGameCardHtml(g)).join('');
+        }
+
+        // Filter and Search Library Logic
+        function filterGames() {
+            const search = document.getElementById('library-search').value.toLowerCase();
+            const genre = document.getElementById('filter-genre').value;
+            const status = document.getElementById('filter-status').value;
+            const platform = document.getElementById('filter-platform').value;
+            const sort = document.getElementById('filter-sort').value;
+
+            let filtered = gamesData.filter(game => {
+                const matchSearch = game.title.toLowerCase().includes(search) || (game.notes && game.notes.toLowerCase().includes(search));
+                const matchGenre = genre === 'ALL' || game.genre === genre;
+                const matchStatus = status === 'ALL' || game.status === status;
+                const matchPlatform = platform === 'ALL' || game.platform === platform;
+                return matchSearch && matchGenre && matchStatus && matchPlatform;
+            });
+
+            // Sorting logic
+            if (sort === 'newest') {
+                filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            } else if (sort === 'rating-desc') {
+                filtered.sort((a,b) => b.rating - a.rating);
+            } else if (sort === 'rating-asc') {
+                filtered.sort((a,b) => a.rating - b.rating);
+            } else if (sort === 'name-asc') {
+                filtered.sort((a,b) => a.title.localeCompare(b.title));
+            }
+
+            const grid = document.getElementById('library-grid');
+            const empty = document.getElementById('library-empty');
+            const countLabel = document.getElementById('library-count-label');
+
+            countLabel.innerText = `Hiển thị ${filtered.length} / ${gamesData.length} game`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                empty.classList.remove('hidden');
+            } else {
+                empty.classList.add('hidden');
+                grid.innerHTML = filtered.map(g => createGameCardHtml(g)).join('');
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('library-search').value = '';
+            document.getElementById('filter-genre').value = 'ALL';
+            document.getElementById('filter-status').value = 'ALL';
+            document.getElementById('filter-platform').value = 'ALL';
+            document.getElementById('filter-sort').value = 'newest';
+            filterGames();
+        }
+
+        // Handle Quick Image Preset Selection in Form
+        function selectPresetImage(url) {
+            document.getElementById('add-cover').value = url;
+            showToast('Đã chọn ảnh mẫu!');
+        }
+
+        // Handle Add Game Form Submit
+        function handleAddGame(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('add-title').value.trim();
+            const genre = document.getElementById('add-genre').value;
+            const platform = document.getElementById('add-platform').value;
+            const status = document.getElementById('add-status').value;
+            const rating = document.getElementById('add-rating').value;
+            const cover = document.getElementById('add-cover').value.trim();
+            const notes = document.getElementById('add-notes').value.trim();
+
+            const newGame = {
+                id: Date.now().toString(),
+                title,
+                genre,
+                platform,
+                status,
+                rating,
+                cover: cover || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+                notes,
+                createdAt: new Date().toISOString()
+            };
+
+            gamesData.unshift(newGame);
+            saveGamesToStorage();
+            updateAllPages();
+
+            document.getElementById('add-game-form').reset();
+            showToast(`Đã thêm "${title}" vào bộ sưu tập!`);
+            switchPage('library');
+        }
+
+        // Delete Game
+        function deleteGame(id) {
+            const game = gamesData.find(g => g.id === id);
+            if (!game) return;
+
+            gamesData = gamesData.filter(g => g.id !== id);
+            saveGamesToStorage();
+            updateAllPages();
+            closeModal();
+            showToast(`Đã xóa "${game.title}" khỏi thư viện.`);
+        }
+
+        // Change Status Directly
+        function updateGameStatus(id, newStatus) {
+            const game = gamesData.find(g => g.id === id);
+            if (game) {
+                game.status = newStatus;
+                saveGamesToStorage();
+                updateAllPages();
+                openGameModal(id);
+                showToast(`Cập nhật trạng thái thành: ${newStatus}`);
+            }
+        }
+
+        // Open Game Detail Modal
+        function openGameModal(id) {
+            const game = gamesData.find(g => g.id === id);
+            if (!game) return;
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="relative h-60">
+                    <img src="${game.cover}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/131722/00f0ff?text=Cyber+Game'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-cyber-card via-cyber-card/40 to-transparent"></div>
+                    <div class="absolute bottom-4 left-6 right-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            ${getStatusBadge(game.status)}
+                            <span class="text-xs bg-cyber-dark px-2 py-0.5 rounded font-mono text-gray-300">${game.platform}</span>
+                            <span class="text-xs bg-cyber-purple/30 text-cyber-accent px-2 py-0.5 rounded font-mono">${game.genre}</span>
+                        </div>
+                        <h2 class="text-2xl font-extrabold font-orbitron text-white">${game.title}</h2>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-5">
+                    <div class="flex justify-between items-center bg-cyber-dark p-3 rounded-xl border border-cyber-border">
+                        <span class="text-xs text-gray-400">Đánh giá người dùng:</span>
+                        ${getRatingStars(game.rating)}
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Cảm nhận / Ghi chú</label>
+                        <p class="text-sm text-gray-200 bg-cyber-dark p-3 rounded-xl border border-cyber-border italic">
+                            ${game.notes ? game.notes : 'Chưa có ghi chú cá nhân cho tựa game này.'}
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-400 mb-2">Đổi nhanh trạng thái</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button onclick="updateGameStatus('${game.id}', 'Playing')" class="px-2 py-2 rounded-lg bg-cyber-dark hover:bg-cyber-accent/20 border border-cyber-border text-xs text-cyber-accent font-semibold">Đang Chơi</button>
+                            <button onclick="updateGameStatus('${game.id}', 'Completed')" class="px-2 py-2 rounded-lg bg-cyber-dark hover:bg-green-500/20 border border-cyber-border text-xs text-cyber-success font-semibold">Hoàn Thành</button>
+                            <button onclick="updateGameStatus('${game.id}', 'Wishlist')" class="px-2 py-2 rounded-lg bg-cyber-dark hover:bg-cyber-pink/20 border border-cyber-border text-xs text-cyber-pink font-semibold">Muốn Chơi</button>
+                            <button onclick="updateGameStatus('${game.id}', 'On Hold')" class="px-2 py-2 rounded-lg bg-cyber-dark hover:bg-yellow-500/20 border border-cyber-border text-xs text-cyber-warning font-semibold">Tạm Dừng</button>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-cyber-border flex justify-between items-center">
+                        <span class="text-[10px] text-gray-500 font-mono">Thêm ngày: ${new Date(game.createdAt).toLocaleDateString('vi-VN')}</span>
+                        <button onclick="deleteGame('${game.id}')" class="px-4 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                            <i class="fa-solid fa-trash"></i> Xóa Game
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('game-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+        }
+
+        // Render Favorites Hall of Fame on Stats Page
+        function renderFavoritesStats() {
+            const grid = document.getElementById('stats-favorites-grid');
+            const favorites = gamesData.filter(g => g.rating === '5');
+            if (favorites.length === 0) {
+                grid.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Chưa có game nào đạt 5 sao.</p>`;
+                return;
+            }
+            grid.innerHTML = favorites.map(g => createGameCardHtml(g)).join('');
+        }
+
+        // Render Chart.js Visualizations
+        function renderCharts() {
+            // Genre Chart Data
+            const genreCounts = {};
+            gamesData.forEach(g => {
+                genreCounts[g.genre] = (genreCounts[g.genre] || 0) + 1;
+            });
+
+            const genreCtx = document.getElementById('genreChart').getContext('2d');
+            if (genreChartInstance) genreChartInstance.destroy();
+            genreChartInstance = new Chart(genreCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(genreCounts),
+                    datasets: [{
+                        data: Object.values(genreCounts),
+                        backgroundColor: ['#00f0ff', '#7000ff', '#ff0055', '#00ff66', '#ffb700', '#3b82f6', '#ec4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#9ca3af', font: { family: 'Inter', size: 11 } } }
+                    }
+                }
+            });
+
+            // Platform Chart Data
+            const platformCounts = {};
+            gamesData.forEach(g => {
+                platformCounts[g.platform] = (platformCounts[g.platform] || 0) + 1;
+            });
+
+            const platformCtx = document.getElementById('platformChart').getContext('2d');
+            if (platformChartInstance) platformChartInstance.destroy();
+            platformChartInstance = new Chart(platformCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(platformCounts),
+                    datasets: [{
+                        data: Object.values(platformCounts),
+                        backgroundColor: ['#3b82f6', '#00f0ff', '#ff0055', '#10b981', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#9ca3af', font: { family: 'Inter', size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // Export Data JSON
+        function exportDataJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gamesData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `cyber_vault_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('Đã tải xuống file sao lưu JSON!');
+        }
+
+        // Import Data JSON
+        function importDataJSON(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function (e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        gamesData = imported;
+                        saveGamesToStorage();
+                        updateAllPages();
+                        showToast('Khôi phục dữ liệu thành công!');
+                    } else {
+                        showToast('Tệp JSON không hợp lệ!');
+                    }
+                } catch (err) {
+                    showToast('Đã xảy ra lỗi khi đọc tệp JSON!');
+                }
+            };
+            if (event.target.files[0]) {
+                fileReader.readAsText(event.target.files[0]);
+            }
+        }
+
+        // Reset to Default Sample Data
+        function resetToSampleData() {
+            gamesData = sampleGames;
+            saveGamesToStorage();
+            updateAllPages();
+            showToast('Đã khôi phục bộ sưu tập mẫu!');
+        }
+
+        // Helper Toast Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.innerText = msg;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
