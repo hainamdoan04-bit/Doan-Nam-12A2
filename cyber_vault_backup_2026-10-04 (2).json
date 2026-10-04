@@ -1,0 +1,68 @@
+[
+  {
+    "id": "1791104252462",
+    "title": "Project Sekai",
+    "genre": "RPG",
+    "platform": "Mobile",
+    "status": "Playing",
+    "rating": "5",
+    "cover": "https://static.wikia.nocookie.net/projectsekai/images/b/bf/Main-image.jpg/revision/latest/scale-to-width-down/1200?cb=20201011130100",
+    "notes": "GOOD BAD MISS",
+    "createdAt": "2026-10-04T08:57:32.462Z"
+  },
+  {
+    "id": "1791103261057",
+    "title": "Honkai: Star Rail",
+    "genre": "Action",
+    "platform": "PC",
+    "status": "Playing",
+    "rating": "5",
+    "cover": "https://cdn-img.thethao247.vn/storage/files/haibui/2023/04/05/honkai-star-rail-van-se-an-khach-du-di-theo-the-loai-turn-based-265527.jpg",
+    "notes": "bố hsr ơi con về rồi 😂",
+    "createdAt": "2026-10-04T08:41:01.057Z"
+  },
+  {
+    "id": "1791102931104",
+    "title": "master duel",
+    "genre": "Strategy",
+    "platform": "PC",
+    "status": "On Hold",
+    "rating": "1",
+    "cover": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1449850/88fd770f77ae66d7599b548343325be6cdb05de0/capsule_616x353.jpg?t=1788064919",
+    "notes": "master duel ko còn vui nữa",
+    "createdAt": "2026-10-04T08:35:31.104Z"
+  },
+  {
+    "id": "1791102555664",
+    "title": "Fortnite",
+    "genre": "Action",
+    "platform": "PC",
+    "status": "Playing",
+    "rating": "5",
+    "cover": "https://pbs.twimg.com/media/HTTjOVNbYAAd4q3?format=jpg&name=large",
+    "notes": "peak peak peak",
+    "createdAt": "2026-10-04T08:29:15.664Z"
+  },
+  {
+    "id": "1791102200013",
+    "title": "Valorant",
+    "genre": "Action",
+    "platform": "PC",
+    "status": "Playing",
+    "rating": "4",
+    "cover": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyu5Y7q01-T5v4bi8GeckHAdV94zvvtmAM-ehpOMwAtXJP_4N7S6Pcw2g&s=10",
+    "notes": "chỉ hay khi mua được odin",
+    "createdAt": "2026-10-04T08:23:20.013Z"
+  },
+  {
+    "id": "1791102041164",
+    "title": "needy streamer overload",
+    "genre": "Indie",
+    "platform": "PC",
+    "status": "Completed",
+    "rating": "5",
+    "cover": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1451940/header.jpg?t=1762834234",
+    "notes": "peak peak peak",
+    "createdAt": "2026-10-04T08:20:41.164Z"
+  }
+]
